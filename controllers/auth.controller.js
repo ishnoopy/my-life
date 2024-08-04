@@ -1,8 +1,6 @@
 const BaseClass = require('../core/baseClass');
 const AuthService = require('../services/auth.service');
-
-const { logger } = require('../middlewares/logger');
-
+const { logger, logError } = require('../middlewares/logger');
 class AuthController extends BaseClass {
   constructor() {
     super();
@@ -11,11 +9,24 @@ class AuthController extends BaseClass {
 
   async register(req, res) {
     try {
-      const response = await this.authService.register(req.body);
-      res.send(response);
+      const userData = req.body;
+      const user = await this.authService.register(userData);
+      logger.info(`User registered successfully: ${user}`);
+      res.status(201).json(user);
     } catch (error) {
-      logger.error('Error in auth controller', { error });
-      res.status(400).send(error);
+      logError(error);
+      res.status(500).json({ message: error.message });
+    }
+  }
+
+  async login(req, res) {
+    try {
+      const userData = req.body;
+      const user = await this.authService.login(userData);
+      res.status(200).json(user);
+    } catch (error) {
+      logError(error);
+      res.status(500).json({ message: error.message });
     }
   }
 }
