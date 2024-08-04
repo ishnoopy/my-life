@@ -15,17 +15,33 @@ class PostRepository extends BaseClass {
     }
   }
 
-  async getPosts(userId) {
+  async getPosts(userId, attributes = null) {
     try {
-      return await this.postModel.findAll({ where: { user_id: userId } });
+      return await this.postModel.findAll({ where: { user_id: userId }, attributes });
     } catch (error) {
       throw error;      
     }
   }
 
-  async getPost(postId) {
+  async getPost(postId, attributes = null) {
     try {
-      return await this.postModel.findOne({ where: { id: postId } });
+      return await this.postModel.findOne({ where: { id: postId }, attributes });
+    } catch (error) {
+      throw error;      
+    }
+  }
+
+  async getPostsByCondition(condition, attributes = null) {
+    try {
+      return await this.postModel.findAll({ where: condition, attributes });
+    } catch (error) {
+      throw error;      
+    }
+  }
+
+  async getPostByCondition(condition, attributes = null) {
+    try {
+      return await this.postModel.findOne({ where: condition, attributes });
     } catch (error) {
       throw error;      
     }
