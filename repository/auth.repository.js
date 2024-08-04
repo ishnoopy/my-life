@@ -9,7 +9,6 @@ class AuthRepository extends BaseClass {
 
   async register(userData) {
     try {
-      console.log('userData', userData);
       const userExists = await this.userModel.findOne({ where: { email: userData.email } });
       if (userExists) {
         throw new Error('User already exists');
