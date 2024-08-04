@@ -2,6 +2,7 @@ const winston = require('winston');
 const fs = require('fs');
 const path = require('path');
 
+
 // Create the logs directory if it doesn't exist
 const logDir = 'logs';
 if (!fs.existsSync(logDir)) {
@@ -64,4 +65,23 @@ const loggerMiddleware = (req, res, next) => {
   next()
 }
 
-module.exports = { logger, loggerMiddleware }
+
+async function logError(error) {
+  const stackTrace = await import('stack-trace');
+
+  const trace = stackTrace.parse(error);
+  const formattedStack = trace.map((frame) => {
+    return {
+      file: frame.getFileName(),
+      line: frame.getLineNumber(),
+      function: frame.getFunctionName()
+    }
+  })
+
+  logger.error('Error Log', {
+    message: error.message,
+    stack: formattedStack
+  })
+}
+
+module.exports = { logger, loggerMiddleware, logError }
